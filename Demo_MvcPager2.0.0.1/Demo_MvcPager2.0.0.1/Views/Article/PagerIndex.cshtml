@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "PagerIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model Webdiyer.WebControls.Mvc.PagedList<Demo_MvcPager2._0._0._1.Models.ArticleEntity>
+@using Webdiyer.WebControls.Mvc;
+@section header
+{
+    <link rel="stylesheet" type="text/css" href="http://staticv3.zhtx.net/pc/web/opc/default/css/public.css" />
+    <link rel="stylesheet" type="text/css" href="http://staticv3.zhtx.net/pc/web/opc/default/css/global.css" />
+    <link rel="stylesheet" type="text/css" href="http://staticv3.zhtx.net/pc/web/opc/default/css/content.css" />
+    <link rel="stylesheet" type="text/css" href="http://staticv3.zhtx.net/pc/web/opc/default/css/page.css" />
+    <style type="text/css">
+        #divMain {
+            width: 1002px;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        a.selected {
+            background: #3ab7ae none repeat scroll 0 0;
+            border: 1px solid #3ab7ae;
+            color: #fff;
+        }
+    </style>
+}
+
+<div id="divMain">
+    @*@Html.ActionLink("超市前台 分页列表", "index")
+    @Html.ActionLink("业务管理||供货商 分页列表", "OpcIndex", null, new { @class = "selected" })*@
+    @*<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="~/Source/Demo_MvcPager2.0.0.1.rar">下载示例</a></span>*@
+    <fieldset>
+        <legend>查询</legend>
+        <form id="searchForm" method="post">
+            <span>编号1：</span><input type="text" style="width: 120px" name="ArticleId" />
+            <span>标题1：</span><input type="text" style="width: 120px" name="Title" />
+            <span>作者1：</span><input type="text" style="width: 120px" name="Author" />
+            <input type="hidden" name="PageSize" value="4" />
+            <input type="submit" value="搜索">
+        </form>
+    </fieldset>
+    <!--数据填充 部分视图-->
+    <div id="divPageData">
+        @*@Html.Partial("_opcArticleList", Model)*@
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:15%">
+                        文章编号1
+                    </th>
+                    <th style="width:50%">
+                        文章标题1
+                    </th>
+                    <th style="width:15%">
+                        文章作者1
+                    </th>
+                    <th style="width:20%">
+                        创建时间1
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Count > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ArticleId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Author)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreateTime)
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4">没有找到匹配的数据</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div style="clear:both; height:5px;"></div>
+        @Ajax.Pager(Model, new PagerOptions
+{
+    PageIndexParameterName = "PageIndex",
+    CssClass = "page",
+    AutoHide = true,
+    NumericPagerItemCount = 5,
+    PagerItemsSeperator = "",
+    PagerItemWrapperFormatString = "<span>{0}</span>",
+    CurrentPagerItemWrapperFormatString = "<span class=\"active\"><a>{0}</a></span>",
+
+    ShowFirstLast = false,
+
+    PrevPageText = "<<上一页",
+    NextPageText = "下一页>>",
+
+    ShowPageIndexBox = true,
+    PageIndexBoxWrapperFormatString = string.Format("<span>共 {1} 条记录</span> <span>{0} 页</span> <span>到第</span><span>{{0}} 页</span>", Model.TotalPageCount, Model.TotalItemCount),//开始索引页跳转
+
+    ShowGoButton = true,
+    GoButtonText = "确定",
+    GoToPageSectionWrapperFormatString = "<span class=\"gotoPage\">{0}</span>",
+}, new MvcAjaxOptions
+{
+    UpdateTargetId = "divPageData",
+    HttpMethod = "Post",
+    DataFormId = "searchForm"
+})
+        <div class="clear"></div>
+    </div>
+    @*@Html.Partial("_explain")*@
+</div>
+
+@section Scripts
+{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <!--异步分页 开启-->
+}
